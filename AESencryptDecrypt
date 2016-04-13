@@ -75,6 +75,29 @@ public class AESencryptDecrypt {
 			res[i]=in[i];
 		}
 		return res;
+		
+	}
+	
+	//rotate left if n<0; right n>0
+	private static char[] rotate(char[] in,int n){
+		boolean dir=n>0;
+		n= Math.abs(n);
+		n=n%in.length;
+		char[] temp= new char[n];
+		if(dir){
+			for(int i=0;i<n;i++){
+				temp[i]=in[i];
+			}
+			for(int i=n;i<in.length;i++){
+				in[i-n]=in[i];
+			}
+			for(int i=n;i<in.length;i++){
+				in[i-n]=in[i];
+			}
+		}else{
+			
+		}
+		return in;	
 	}
 
 }
