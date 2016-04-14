@@ -62,11 +62,14 @@ public class AESencryptDecrypt {
 	public static char[] plain=new char[128];
 
 	public static void main(String[] args) {
-		System.out.println("Encrypting 128 bit 0");
+		System.out.println("Encrypting:\n");
+		
 		for(int i=0;i<plain.length;i++){
-			plain[i]=0;
+			plain[i]=(char) i;
 		}
-		System.out.println("Encrypted:\n"+Arrays.toString(encryptBlock(plain)));
+		printArr(plain);
+		System.out.println("Encrypted:\n");
+		printArr(encryptBlock(plain));
 	}
 	
 	private static char[] encryptBlock(char[] in){
@@ -74,11 +77,12 @@ public class AESencryptDecrypt {
 		for(int i=0;i<res.length;i++){
 			res[i]=in[i];
 		}
+		rotate(res,-3);
 		return res;
 		
 	}
 	
-	//rotate left if n<0; right n>0
+	//rotate left if n>0; right n<0
 	private static char[] rotate(char[] in,int n){
 		boolean dir=n>0;
 		n= Math.abs(n);
@@ -91,13 +95,29 @@ public class AESencryptDecrypt {
 			for(int i=n;i<in.length;i++){
 				in[i-n]=in[i];
 			}
-			for(int i=n;i<in.length;i++){
-				in[i-n]=in[i];
+			for(int i=0;i<n;i++){
+				in[i+in.length-n]=temp[i];
 			}
 		}else{
-			
+			for(int i=in.length-n;i<in.length;i++){
+				temp[i-in.length+n]=in[i];
+			}
+			for(int i=in.length-1;i>=n;i--){
+				in[i]=in[i-n];
+			}
+			for(int i=0;i<n;i++){
+				in[i]=temp[i];
+			}
 		}
 		return in;	
+	}
+	
+	private static void printArr(char[] in){
+		System.out.print("[");
+		for(char c:in){
+			System.out.print((int)c+",");
+		}
+		System.out.println("]");
 	}
 
 }
