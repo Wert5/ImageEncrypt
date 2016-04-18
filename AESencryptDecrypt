@@ -73,11 +73,11 @@ public class AESencryptDecrypt {
 	}
 	
 	private static char[] encryptBlock(char[] in){
-		char[] res= new char[128];
-		for(int i=0;i<res.length;i++){
+		char[] res= new char[16];
+		for(int i=0;i<in.length;i++){
 			res[i]=in[i];
 		}
-		rotate(res,-3);
+		shiftRows(res,true);
 		return res;
 		
 	}
@@ -112,19 +112,26 @@ public class AESencryptDecrypt {
 		return in;	
 	}
 	
-	private static char[] shiftRows(char[] in){
+	private static char[] shiftRows(char[] in, boolean encrypt){
 		char[] t=new char[4];
 		for(int i=0;i<4;i++){
 			for(int j=0;j<4;j++){
 				t[j]=in[i*4+j];
 			}
-			t=rotate(t,i);
+			if(encrypt){
+				t=rotate(t,i);
+			}else{
+				t=rotate(t,-i);
+			}
+			
 			for(int j=0;j<4;j++){
 				in[i*4+j]=t[j];
 			}
 		}
 		return in;
 	}
+	
+	
 	
 	private static void printArr(char[] in){
 		System.out.print("[");
