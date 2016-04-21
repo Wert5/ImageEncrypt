@@ -205,7 +205,7 @@ public class AESencryptDecrypt {
 		return in;
 	}
 	
-	public static char galoisMult(char a, char b){
+	public static char galoisMult(char a, int b){
 		char r=0;
 		char hiBitSet=0;
 		for(int i=0;i<8;i++){
@@ -220,6 +220,66 @@ public class AESencryptDecrypt {
 	        b >>= 1;
 		}
 		return r;
+	}
+	
+	private static char[] mixColumn(char[] in){
+		char[] out = new char[4];
+	    out[0] = (char) (galoisMult(in[0],2) ^ galoisMult(in[3],1) ^ 
+	                galoisMult(in[2],1) ^ galoisMult(in[1],3));
+	    out[1] = (char) (galoisMult(in[1],2) ^ galoisMult(in[0],1) ^ 
+	                galoisMult(in[3],1) ^ galoisMult(in[2],3));
+	    out[2] = (char) (galoisMult(in[2],2) ^ galoisMult(in[1],1) ^ 
+	                galoisMult(in[0],1) ^ galoisMult(in[3],3));
+	    out[3] = (char) (galoisMult(in[3],2) ^ galoisMult(in[2],1) ^ 
+	                galoisMult(in[1],1) ^ galoisMult(in[0],3));
+		return out;
+	}
+	
+	private static char[] mixColumnInv(char[] in){
+		char[] out=new char[4];
+	    out[0] = (char) (galoisMult(in[0],14) ^ galoisMult(in[3],9) ^ 
+	                galoisMult(in[2],13) ^ galoisMult(in[1],11));
+	    out[1] = (char) (galoisMult(in[1],14) ^ galoisMult(in[0],9) ^ 
+	                galoisMult(in[3],13) ^ galoisMult(in[2],11));
+	    out[2] = (char) (galoisMult(in[2],14) ^ galoisMult(in[1],9) ^ 
+	                galoisMult(in[0],13) ^ galoisMult(in[3],11));
+	    out[3] = (char) (galoisMult(in[3],14) ^ galoisMult(in[2],9) ^ 
+	                galoisMult(in[1],13) ^ galoisMult(in[0],11));
+		return out;
+	}
+	
+	private static char[] mixColumns(char[] in){
+		char[] out= new char[in.length];
+		for(int i=0;i<4;i++){
+			char[] col = new char[4];
+			for(int j=0;j<4;j++){
+				col[j]=in[j*4+i];
+			}
+			
+			mixColumn(col);
+			
+			for(int j=0;j<4;j++){
+				out[j*4+i]=col[j];
+			}
+		}
+		return out;
+	}
+	
+	private static char[] mixColumnsInv(char[] in){
+		char[] out= new char[in.length];
+		for(int i=0;i<4;i++){
+			char[] col = new char[4];
+			for(int j=0;j<4;j++){
+				col[j]=in[j*4+i];
+			}
+			
+			mixColumnInv(col);
+			
+			for(int j=0;j<4;j++){
+				out[j*4+i]=col[j];
+			}
+		}
+		return out;
 	}
 	
 	private static void printArr(char[] in){
