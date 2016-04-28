@@ -1,3 +1,6 @@
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
 
@@ -304,6 +307,25 @@ public class AESencryptDecrypt {
 			out[i]=expandKey[n*16+i];
 		}
 		return out;
+	}
+	
+	public static char[] passwordToKey(String passwd){
+		MessageDigest md;
+		try {
+			md = MessageDigest.getInstance("SHA-256");
+			md.update(passwd.getBytes("UTF-8"));
+			byte[] bArr = md.digest();
+			char[] out=new char[32];
+			for(int i=0;i<bArr.length;i++){
+				out[i]=(char) bArr[i];
+			}
+			return out;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			char[] test={'a'};
+			return test;
+		}
 	}
 	
 	private static void printArr(char[] in){
