@@ -344,6 +344,22 @@ public class AESencryptDecrypt {
 		return out;
 	}
 	
+	private static char[] aesMainInv(char[] in, char[] expandKey){
+		char[] roundKey = createRoundKey(expandKey, 14);
+		char[] out = addRoundKey(in, roundKey);
+		
+		for(int i=13;i>0;i++){
+			roundKey = createRoundKey(expandKey,i);
+			out=aesRoundInv(out,roundKey);
+		}
+		
+		roundKey = createRoundKey(expandKey, 14);
+		out=subBytesInv(out);
+		out=shiftRows(out,false);
+		out=addRoundKey(out, roundKey);
+		return out;
+	}
+	
 	private static void printArr(char[] in){
 		System.out.print("[");
 		for(char c:in){
