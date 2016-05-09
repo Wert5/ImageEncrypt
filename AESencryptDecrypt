@@ -64,18 +64,19 @@ public class AESencryptDecrypt {
 	
 	public static char[] plain="winstongrenieris".toCharArray();
 	
-	public static char[] key="winstongrenieriswinstongrenieris".toCharArray();
+	public static char[] key="abcdefghijklmnopabcdefghijklmnop".toCharArray();
 
 	public static void main(String[] args) {
 		System.out.println("Encrypting:\n");
 		char[] expand = expandKey(key);
 		printArr(plain);
+		System.out.println("KeyExpanded:\n");
+		printArr(expand);
 		System.out.println("Encrypted:\n");
-		char[] encrypted = aesMain(plain,expand);
+		char[] encrypted = aesMain(plain,expand);//addRoundKey(plain,createRoundKey(expand, 0));
 		printArr(encrypted);
 		System.out.println("Decrypted:\n");
-		char[] expand2 = expandKey(key);
-		char[] decrypted = aesMainInv(encrypted,expand2);
+		char[] decrypted = aesMainInv(encrypted,expand);//addRoundKey(encrypted,createRoundKey(expand2, 0));
 		printArr(decrypted);
 	}
 	
@@ -190,7 +191,7 @@ public class AESencryptDecrypt {
 	}
 	
 	public static char[] addRoundKey(char[] in, char[] roundKey){
-		/*for(int i=0;i<in.length;i++){
+		for(int i=0;i<in.length;i++){
 			in[i]=(char) (in[i] ^ roundKey[i]);
 		}//*/
 		return in;
@@ -338,6 +339,8 @@ public class AESencryptDecrypt {
 	private static char[] aesMainInv(char[] in, char[] expandKey){
 		char[] roundKey = createRoundKey(expandKey, 14);
 		char[] out = addRoundKey(in, roundKey);
+		out=shiftRows(out,false);
+		out=subBytesInv(out);
 		
 		for(int i=13;i>0;i--){
 			roundKey = createRoundKey(expandKey,i);
@@ -345,8 +348,6 @@ public class AESencryptDecrypt {
 		}
 		
 		roundKey = createRoundKey(expandKey, 0);
-		out=subBytesInv(out);
-		out=shiftRows(out,false);
 		out=addRoundKey(out, roundKey);
 		return out;
 	}
