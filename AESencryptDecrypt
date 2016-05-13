@@ -378,7 +378,7 @@ public class AESencryptDecrypt {
 		return out;
 	}
 	
-	private static void printArr(char[] in){
+	public static void printArr(char[] in){
 		System.out.print("[");
 		for(char c:in){
 			System.out.print((int)c+",");
