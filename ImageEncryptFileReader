@@ -1,3 +1,4 @@
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -9,42 +10,43 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class ImageEncryptFileReader {
 	
-	public static void main(String[] in){
-	ImageEncryptFileReader binary = new ImageEncryptFileReader();
+	public static void main(String[] in) throws IOException{
+		AESencryptDecrypt.printArr(readBinaryFile(chooseFile().getAbsolutePath()));
+	}
+	
+	public static File chooseFile(){
+		 JFileChooser chooser = new JFileChooser();
+		    FileNameExtensionFilter filter = new FileNameExtensionFilter(
+		        "JPG & GIF Images", "jpg", "gif");
+		chooser.setFileFilter(filter);
+		int returnVal = chooser.showOpenDialog(null);
+		if(returnVal == JFileChooser.APPROVE_OPTION) {
+			return chooser.getSelectedFile();
+		}
+		return null;
+	}
+	
+	public static char[] readBinaryFile(String aFileName) throws IOException {
+	    Path path = Paths.get(aFileName);
+	    byte[] fileBytes=Files.readAllBytes(path);
+	    char[] out=new char[fileBytes.length];
+	    for(int i=0;i<out.length;i++){
+	    	out[i]=(char)fileBytes[i];
+	    }
+	    return out;
+	}
 	  
-	  JFileChooser chooser = new JFileChooser();
-	    FileNameExtensionFilter filter = new FileNameExtensionFilter(
-	        "JPG & GIF Images", "jpg", "gif");
-	    chooser.setFileFilter(filter);
-	    int returnVal = chooser.showOpenDialog(null);
-	    if(returnVal == JFileChooser.APPROVE_OPTION) {
-	       System.out.println("You chose to open this file: " +
-	            chooser.getSelectedFile().getName());
+	public static void writeBinaryFile(char[] aBytes, String aFileName) throws IOException {
+	    Path path = Paths.get(aFileName);
+	    byte[] out=new byte[aBytes.length];
+	    for(int i=0;i<out.length;i++){
+	    	out[i]=(byte) aBytes[i];
 	    }
-	    
-	    try{
-		    byte[] bytes = binary.readSmallBinaryFile(chooser.getSelectedFile().getName());
-		    log("Small - size of file read in:" + bytes.length);
-		    binary.writeSmallBinaryFile(bytes, OUTPUT_FILE_NAME);
-	    }catch(Exception e){
-	    	System.out.println(e.getMessage());
-	    }
-  }
-
-  final static String OUTPUT_FILE_NAME = "pod";
-  
-  byte[] readSmallBinaryFile(String aFileName) throws IOException {
-    Path path = Paths.get(aFileName);
-    return Files.readAllBytes(path);
-  }
-  
-  void writeSmallBinaryFile(byte[] aBytes, String aFileName) throws IOException {
-    Path path = Paths.get(aFileName);
-    Files.write(path, aBytes); //creates, overwrites
-  }
- 
-  private static void log(Object aMsg){
-    System.out.println(String.valueOf(aMsg));
-  }
+	    Files.write(path, out); //creates, overwrites
+	}
+	 
+	private static void log(Object aMsg){
+	    System.out.println(String.valueOf(aMsg));
+	}
   
 }  
