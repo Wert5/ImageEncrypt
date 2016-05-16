@@ -11,7 +11,17 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 public class ImageEncryptFileReader {
 	
 	public static void main(String[] in) throws IOException{
-		AESencryptDecrypt.printArr(readBinaryFile(chooseFile().getAbsolutePath()));
+		String f=chooseFile().getAbsolutePath();
+		char[] orig = readBinaryFile(f);
+		System.out.println("Original:");
+		AESencryptDecrypt.printArr(orig);
+		char[] test= AESencryptDecrypt.encryptFullArray(orig, AESencryptDecrypt.passwordToKey("Hello"));
+		System.out.println("Encrypted:");
+		AESencryptDecrypt.printArr(test);
+		char[] dec= AESencryptDecrypt.decryptFullArray(test, AESencryptDecrypt.passwordToKey("Hello"));
+		System.out.println("Decrypted:");
+		AESencryptDecrypt.printArr(dec);
+		writeBinaryFile(dec,f);
 	}
 	
 	public static File chooseFile(){
