@@ -45,6 +45,10 @@ public class ImageEncryptFileReader {
 	    }
 	    return out;
 	}
+	
+	public static char[] readBinaryFile(File f) throws IOException {
+		return readBinaryFile(f.getAbsolutePath());
+	}
 	  
 	public static void writeBinaryFile(char[] aBytes, String aFileName) throws IOException {
 	    Path path = Paths.get(aFileName);
@@ -54,9 +58,9 @@ public class ImageEncryptFileReader {
 	    }
 	    Files.write(path, out); //creates, overwrites
 	}
-	 
-	private static void log(Object aMsg){
-	    System.out.println(String.valueOf(aMsg));
+	
+	public static void writeBinaryFile(char[] aBytes, File f) throws IOException {
+		writeBinaryFile(aBytes, f.getAbsolutePath());
 	}
-  
+
 }  
