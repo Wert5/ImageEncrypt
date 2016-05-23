@@ -1,3 +1,4 @@
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -18,16 +19,16 @@ public class ImageEncryptGUI extends JFrame {
 	JButton browse = new JButton("Browse");
 	JButton decrypt = new JButton("Decrypt");
 	JTextField password = new JTextField("password");
-	JTextField filePath = new JTextField("filePath");
 	JButton OK = new JButton("OK");
 	JPanel South = new JPanel();
-	JButton openImage = new JButton("Open a picture.");
+	JButton imgDisp= new JButton();
+	
+	File openFile=null;
+	char[] current;
   
 	public static void main(String... aArgs) {
 		ImageEncryptGUI sonya = new ImageEncryptGUI();
 		sonya.setVisible(true);
-		  
-		  
 	}
 	
 	
@@ -37,15 +38,83 @@ public class ImageEncryptGUI extends JFrame {
 		this.setLayout(new BorderLayout());
 		this.setVisible(true);
 		
-		this.add(save,BorderLayout.NORTH);
+		//this.add(save,BorderLayout.NORTH);
 		this.add(South,BorderLayout.SOUTH);
-		South.setLayout(new GridLayout(4,2));
+		this.add(imgDisp,BorderLayout.CENTER);
+		imgDisp.setEnabled(false);
+		South.setLayout(new GridLayout(2,3));
 		South.add(encrypt);
 		South.add(decrypt);
+		South.add(browse);
+		South.add(save);
+		South.add(new JLabel("Password:"));
+		South.add(password);
 		encrypt.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				if(openFile!=null){
+					try {
+						current=AESencryptDecrypt.encryptFullArray(ImageEncryptFileReader.readBinaryFile(openFile), AESencryptDecrypt.passwordToKey(password.getText()));
+						JOptionPane.showMessageDialog(null, (openFile.getName()+" has been encrypted!"));
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				}
+			}
+	
+		});
+		
+		decrypt.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if(openFile!=null){
+					try {
+						current=AESencryptDecrypt.decryptFullArray(ImageEncryptFileReader.readBinaryFile(openFile), AESencryptDecrypt.passwordToKey(password.getText()));
+						JOptionPane.showMessageDialog(null, (openFile.getName()+" has been decrypted!"));
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				}
+			}
+	
+		});
+		
+		save.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if(current!=null){
+					JFileChooser chooser = new JFileChooser();
+					int ret = chooser.showSaveDialog(null);
+					if(ret==JFileChooser.APPROVE_OPTION){
+						try {
+							File saveF=chooser.getSelectedFile();
+							if(!saveF.getName().endsWith(".jpg")){
+								saveF.renameTo(new File(saveF.getParent()+saveF.getName().substring(0,saveF.getName().length()-3)));
+							}
+							ImageEncryptFileReader.writeBinaryFile(current, saveF);
+							JOptionPane.showMessageDialog(null, ("Data has been saved as "+saveF.getName()));
+						} catch (IOException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+					}
+				}
+			}
+	
+		});
+		
+		browse.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				openFile=ImageEncryptFileReader.chooseFile();
+				try{
+					imgDisp.setIcon(new ImageIcon());
+				}catch(Exception e1){
 					
+				}
+				
 			}
 	
 		});
