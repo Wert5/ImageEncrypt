@@ -41,7 +41,6 @@ public class ImageEncryptGUI extends JFrame {
 		//this.add(save,BorderLayout.NORTH);
 		this.add(South,BorderLayout.SOUTH);
 		this.add(imgDisp,BorderLayout.CENTER);
-		imgDisp.setEnabled(false);
 		South.setLayout(new GridLayout(2,3));
 		South.add(encrypt);
 		South.add(decrypt);
@@ -110,7 +109,7 @@ public class ImageEncryptGUI extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				openFile=ImageEncryptFileReader.chooseFile();
 				try{
-					imgDisp.setIcon(new ImageIcon());
+					imgDisp.setIcon(new ImageIcon(openFile.getAbsolutePath(),""));
 				}catch(Exception e1){
 					
 				}
